@@ -24,10 +24,8 @@ jobs:
           node-version: '14'
 
       # 3. Install dependencies and build the app
-      - name: Install Dependencies and Build
-        run: |
-          npm install
-          npm run build # بناء تطبيق NodeJS
+      - name: Install Dependencies
+  	run: npm install
 
       # 4. Build the Docker Image
       - name: Build Docker Image
