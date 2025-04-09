@@ -10,20 +10,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          registry: ghcr.io
-          username: karimmustafa11
-          password: ${{ secrets.GHCR_TOKEN }}
+          node-version: '18'
 
-      - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/karimmustafa11/node-docker-app:latest .
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Push Docker image
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
         run: |
-          docker push ghcr.io/karimmustafa11/node-docker-app:latest
+          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/node-docker-app:latest
+          echo "Building and pushing image: $IMAGE_NAME"
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
